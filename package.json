@@ -1,14 +1,15 @@
 {
   "name": "json-comparator",
   "version": "1.0.0",
-  "description": "Compares two configuration files and shows a difference.",
   "type": "module",
-  "main": "index.js",
+  "description": "Compares two configuration files and shows a difference.",
+  "main": "./bin/gendiff.js",
   "bin": {
-    "json-comparator": "bin/index.js"
+    "json-comparator": "bin/gendiff.js"
   },
   "dependencies": {
     "commander": "^12.0.0",
+    "express": "^4.18.3",
     "nodejs": "^0.0.0"
   },
   "scripts": {
@@ -23,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/EugeneDiskeyn/JSON-comparator/issues"
   },
-  "homepage": "https://github.com/EugeneDiskeyn/JSON-comparator#readme"
+  "homepage": "https://github.com/EugeneDiskeyn/JSON-comparator#readme",
+  "devDependencies": {
+    "@types/node": "^20.11.25"
+  }
 }
