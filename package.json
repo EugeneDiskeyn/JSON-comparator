@@ -10,7 +10,7 @@
   "dependencies": {
     "commander": "^12.0.0",
     "express": "^4.18.3",
-    "nodejs": "^0.0.0"
+    "lodash": "^4.17.21"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -24,8 +24,5 @@
   "bugs": {
     "url": "https://github.com/EugeneDiskeyn/JSON-comparator/issues"
   },
-  "homepage": "https://github.com/EugeneDiskeyn/JSON-comparator#readme",
-  "devDependencies": {
-    "@types/node": "^20.11.25"
-  }
+  "homepage": "https://github.com/EugeneDiskeyn/JSON-comparator#readme"
 }
