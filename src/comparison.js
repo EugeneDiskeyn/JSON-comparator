@@ -1,10 +1,15 @@
 export const showComparation = (file1, file2) => {
 
-    const status1 = getStatus(file1, file2);
-    const status2 = getStatus(file2, file1);
+    getSortedFile(file1);
+
+    const sortedFile1 = getSortedFile(file1);
+    const sortedFile2 = getSortedFile(file2);
+
+    const status1 = getStatus(sortedFile1, sortedFile2);
+    const status2 = getStatus(sortedFile2, sortedFile1);
     
-    console.log(getComparedFileAsString(file1, status1), "\n");
-    console.log(getComparedFileAsString(file2, status2));
+    console.log(getComparedFileAsString(sortedFile1, status1), "\n");
+    console.log(getComparedFileAsString(sortedFile2, status2));
 }
 
 const getStatus = (file1, file2) => {
@@ -41,4 +46,15 @@ const getComparedFileAsString = (file, status) => {
     })
 
     return array.join("\n");
+}
+
+const getSortedFile = (file) => {
+    const sortedKeys = Object.keys(file).sort();
+    let sortedFile = {};
+
+    for (let key of sortedKeys) {
+        sortedFile[key] = file[key];
+    }
+    
+    return sortedFile;
 }
