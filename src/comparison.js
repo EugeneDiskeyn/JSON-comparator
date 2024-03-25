@@ -1,24 +1,23 @@
 export const showComparation = (file1, file2) => {
+    if (file1 && file2) {
 
-    getSortedFile(file1);
-
-    const sortedFile1 = getSortedFile(file1);
-    const sortedFile2 = getSortedFile(file2);
-
-    const status1 = getStatus(sortedFile1, sortedFile2);
-    const status2 = getStatus(sortedFile2, sortedFile1);
-    
-    console.log(getComparedFileAsString(sortedFile1, status1), "\n");
-    console.log(getComparedFileAsString(sortedFile2, status2));
+        const comparedObject = getSortedFile(getComparedObjectWithSigns(file1, file2));
+        return getComparedFileAsString(comparedObject);
+    }
 }
 
-const getStatus = (file1, file2) => {
+const getComparedObjectWithSigns = (file1, file2) => {
     const keys1 = Object.keys(file1);
     const keys2 = Object.keys(file2);
-    const status = [];
+    let comparedObject = {};
 
+    for (let key2 of keys2) {
+        comparedObject[key2] = [];
+        comparedObject[key2][0] = "*";
+        comparedObject[key2][1] = file2[key2];
+    }
+    
     for (let key1 of keys1) {
-
         const key2 = keys2.find((key2) => {
             if (key1 === key2) {
                 return key2;
@@ -27,25 +26,21 @@ const getStatus = (file1, file2) => {
             }
         })
 
+        comparedObject[key1] = [];
+
         if (key2 && file1[key1] === file2[key2]) {
-            status.push(" ");
+            comparedObject[key1][0] = " ";
+            delete file2[key1];
         } else if (key2) {
-            status.push("+");
+            comparedObject[key1][0] = "+";
+            delete file2[key1];
         } else {
-            status.push("-");
+            comparedObject[key1][0] = "-";
         }
+        comparedObject[key1][1] = file1[key1];
     }
-    return status;
-}
 
-const getComparedFileAsString = (file, status) => {
-    const array = [];
-
-    Object.keys(file).map((element, index) => {
-        array.push(`${status[index]} "${element}": "${file[element]}"`);
-    })
-
-    return array.join("\n");
+    return comparedObject;
 }
 
 const getSortedFile = (file) => {
@@ -57,4 +52,14 @@ const getSortedFile = (file) => {
     }
     
     return sortedFile;
+}
+
+const getComparedFileAsString = (comparedObject) => {
+    const array = [];
+
+    Object.keys(comparedObject).map((element) => {
+        array.push(`${comparedObject[element][0]} "${element}": "${comparedObject[element][1]}"`);
+    })
+
+    return array.join("\n");
 }
