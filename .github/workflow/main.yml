@@ -1,0 +1,8 @@
+name: first-try
+on: 
+  workflow_dispatch:
+  push:
+    jobs:
+      run-test:
+        steps:
+          run: npm test
