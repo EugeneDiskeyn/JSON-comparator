@@ -1,6 +1,7 @@
 import { join, resolve } from 'path';
 import { expectedAnswer } from "./expectedResult";
 import { gendiff } from "../src/gendiff";
+import { test, expect } from '@jest/globals';
 
 test('JSON files are compared correctly', () => {
     const path = resolve();
