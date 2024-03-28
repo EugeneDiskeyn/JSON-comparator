@@ -1,14 +1,10 @@
-import file from "fs";
-import { isAbsolute } from "path";
+import yaml from "js-yaml";
 
-export const parse = (path, fileType) => {
-    const relativePath = "../data/"
-
-    if (file.existsSync(`${relativePath + path}`) || file.existsSync(path)) {
-        const jsonFile = isAbsolute(path)? file.readFileSync(path) : file.readFileSync(`${relativePath + path}`);
-        return JSON.parse(jsonFile);
+export const parse = (data, fileType) => {
+    switch (fileType) {
+        case "json":
+            return JSON.parse(data);
+        case "yml":
+            return yaml.load(data);
     }
-
-    console.log("Wrong path");
-    return null;
 }

@@ -1,6 +1,6 @@
-import { showComparation } from "../src/comparison";
-import { parse } from "../src/parse";
 import { join, resolve } from 'path';
+import { expectedAnswer } from "./expectedResult";
+import { gendiff } from "../src/gendiff";
 
 test('JSON files are compared correctly', () => {
     const path = resolve();
@@ -8,14 +8,7 @@ test('JSON files are compared correctly', () => {
     const path1 = join(path + "/data/file1.json");
     const path2 = join(path + "/data/file2.json");
 
-    const file1 = parse(path1);
-    const file2 = parse(path2);
+    const result = gendiff(path1, path2);
 
-    const result = showComparation(file1, file2);
-
-    expect(result).toBe(`- "follow": "false"
-  "host": "hexlet.io"
-- "proxy": "123.234.53.22"
-+ "timeout": "50"
-* "verbose": "true"`);
+    expect(result).toBe(expectedAnswer);
   });
