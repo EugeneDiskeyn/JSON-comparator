@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Compares two configuration files and shows a difference.",
-  "main": "./bin/gendiff.js",
+  "main": "./src/gendiff.js",
   "bin": {
     "json-comparator": "bin/gendiff.js"
   },
