@@ -1,6 +1,7 @@
 import { program } from "commander";
 import { gendiff } from "../src/gendiff.js";
 
+
 program
 .description("Compares two configuration files and shows a difference.You can specify the full path to a file or only the name of it, if it is located in the working directory")
 .version('1.0.0', '-V, --version', 'output the version number')

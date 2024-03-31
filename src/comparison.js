@@ -1,9 +1,8 @@
 export const showComparation = (file1, file2) => {
-    if (file1 && file2) {
-        const comparedObject = getSortedFile(getComparedObjectWithSigns(file1, file2));
-        return getComparedFileAsString(comparedObject);
-    }
+    const comparedObject = getSortedFile(getComparedObjectWithSigns(file1, file2));
+    return getComparedFileAsString(comparedObject);
 }
+
 
 const getComparedObjectWithSigns = (file1, file2) => {
     const keys1 = Object.keys(file1);
@@ -41,6 +40,7 @@ const getComparedObjectWithSigns = (file1, file2) => {
 
     return comparedObject;
 }
+
 
 const getSortedFile = (file) => {
     const sortedKeys = Object.keys(file).sort();
