@@ -9,7 +9,7 @@ program
 .argument("<first>", "First file path")
 .argument("<second>", "Second file path")
 .action((path1, path2)=>{
-        gendiff(path1, path2);
+        console.log(gendiff(path1, path2));
 })
 
 program.parse();
