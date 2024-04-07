@@ -1,5 +1,5 @@
-export const expectedAnswer = `- "follow": "false"
+export const expectedResult = `- "follow": "false"
   "host": "hexlet.io"
 - "proxy": "123.234.53.22"
-+ "timeout": "50"
++ "timeout": "20"
 * "verbose": "true"`

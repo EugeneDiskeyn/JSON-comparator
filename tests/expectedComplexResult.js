@@ -1,6 +1,5 @@
 export const expectedComplexResult = 
-`
-"common":
+`  "common":
     * "follow": "false"
       "setting1": "Value 1"
     - "setting2": "200"
@@ -25,5 +24,4 @@ export const expectedComplexResult =
       "deep":
           "id":
               "number": "45"
-      "fee": "100500"
-`
+      "fee": "100500"`
