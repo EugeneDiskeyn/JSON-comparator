@@ -9,12 +9,15 @@ export const expectedComplexResult =
           "key5": "value5"
       "setting6":
           "doge":
+            - "wow": ""
             + "wow": "so much"
           "key": "value"
         * "ops": "vops"
   "group1":
+    - "baz": "bas"
     + "baz": "bars"
       "foo": "bar"
+    - "nest": "[complex value]"
     + "nest": "str"
 - "group2":
       "abc": "12345"
