@@ -1,14 +1,28 @@
-export const showComparation = (file1, file2) => {
+import pkg from 'lodash';
+const { isPlainObject } = pkg;
+
+
+export const showComparation = (file1, file2, format) => {
     const comparedFile = getComparedObjectWithSigns(file1, file2);
-    return getPlainAnswer(comparedFile);
+    
+    switch (format) {
+        case "plain":
+            return getPlainAnswer(comparedFile);
+        case "JSON":
+            return getJSONAnswer(comparedFile);
+        default:
+            return getStylishedComparedFile(comparedFile);
+    }
 }
 
 
-const getComparedFileAsString = (comparedFile, tabulation = "") => {
+const getStylishedComparedFile = (comparedFile, tabulation = "") => {
     const array = Object.keys(comparedFile).map((key) => {
         const sign = getSign(comparedFile[key]["status"]);
-        if (typeof(comparedFile[key]["property"]) !== "object") {
+        if (isPlainObject(comparedFile[key]["property"])) {
 
+            return `${tabulation}${sign} "${key}":\n${getStylishedComparedFile(comparedFile[key]["property"], tabulation + "    ")}`;
+        } else {
             let line = ``;
             if (comparedFile[key]["oldProperty"] !== undefined) {
                 line += `${tabulation}- "${key}": "${comparedFile[key]["oldProperty"]}"\n`;
@@ -16,8 +30,6 @@ const getComparedFileAsString = (comparedFile, tabulation = "") => {
             line += `${tabulation}${sign} "${key}": "${comparedFile[key]["property"]}"`;
 
             return line;
-        } else {
-            return `${tabulation}${sign} "${key}":\n${getComparedFileAsString(comparedFile[key]["property"], tabulation + "    ")}`;
         }
     })
 
@@ -35,7 +47,7 @@ const getPlainAnswer = (comparedFile, passedKey="") => {
         const currentKey = passedKey + key;
 
         if (status === "added") {
-            if (typeof(comparedFile[key]["property"]) === "object") {
+            if (isPlainObject(comparedFile[key]["property"])) {
                 array.push(`Property ${currentKey} was added with value [complex value]`);
             } else {
                 array.push(`Property ${currentKey} was added with value ${comparedFile[key]["property"]}`);
@@ -44,7 +56,7 @@ const getPlainAnswer = (comparedFile, passedKey="") => {
             array.push(`Property ${currentKey} was removed`);
         } else {
 
-            if (typeof(comparedFile[key]["property"]) === "object") {
+            if (isPlainObject(comparedFile[key]["property"])) {
                 array.push(getPlainAnswer(comparedFile[key]["property"], currentKey + "."));
             } else {
                 if (status === "changed") {
@@ -59,6 +71,30 @@ const getPlainAnswer = (comparedFile, passedKey="") => {
     return array.join("\n");
 }
 
+
+const getJSONAnswer = (comparedFile, tabulation = "    ", depth = 0) => {
+    const keys = Object.keys(comparedFile);
+    const array = keys.map((key, index)=> {
+        let line = "";
+        if (isPlainObject(comparedFile[key]["property"])) {
+            line += `${tabulation}"${key}": {\n`;
+            line += `${tabulation+"    "}"status": "${comparedFile[key]["status"]}",\n`;
+            line += `${tabulation+"    "}"property": {\n`;
+            line += `${getJSONAnswer(comparedFile[key]["property"], tabulation + "        ", depth + 1)}\n`;
+            line += `${tabulation+"    "}}\n`
+            line += index === keys.length-1? `${tabulation}}` : `${tabulation}},`;
+        } else {
+            line += `${tabulation}"${key}": {\n`
+            line += `${tabulation+"    "}"status": "${comparedFile[key]["status"]}",\n`;
+            line += `${tabulation+"    "}"property": "${comparedFile[key]["property"]}"\n`;
+            line += index === keys.length-1? `${tabulation}}` : `${tabulation}},`;
+        }
+        return line;
+    });
+    return depth === 0? `{\n${array.join("\n")}\n}` : `${array.join("\n")}`;
+}
+
+
 const getComparedObjectWithSigns = (file1, file2) => {
     const comparedFile = getComparedObject(file1, file2)
     return comparedFile;
@@ -66,8 +102,6 @@ const getComparedObjectWithSigns = (file1, file2) => {
 
 
 const getComparedObject = (file1, file2) => {
-
-    //Почему если свойство равно null, программа ломается?
 
     const keys1 = file1 === undefined? [] : Object.keys(file1);
     const keys2 = file2 === undefined? [] : Object.keys(file2);
@@ -80,29 +114,33 @@ const getComparedObject = (file1, file2) => {
         comparedFile[key] = {};
 
         if (file1[key] !== undefined && file2[key] !== undefined) {
-            if (typeof(file1[key]) === "object" && typeof(file2[key]) === "object") {
+
+            if (isPlainObject(file1[key]) && isPlainObject(file2[key])) {
                 comparedFile[key]["status"] = getIfObjectWasChanged(file1[key], file2[key])? "changedInsides" : "unchanged";
                 comparedFile[key]["property"] = getComparedObject(file1[key], file2[key]);
 
-            } else if (typeof(file1[key]) !== "object" && typeof(file2[key]) !== "object") {
+            } else if (!isPlainObject(file1[key]) && !isPlainObject(file2[key])) {
 
                 comparedFile[key]["status"] = file1[key] === file2[key]? "unchanged" : "changed";
-                comparedFile[key]["property"] = file2[key];
                 comparedFile[key]["oldProperty"] = file1[key] === file2[key]? undefined : file1[key];
+                comparedFile[key]["property"] = file2[key];
 
             } else {
                 comparedFile[key]["status"] = "changed";
                 comparedFile[key]["property"] = file2[key];
                 comparedFile[key]["oldProperty"] = "[complex value]";
             }
+
         } else if (file1[key] !== undefined && file2[key] === undefined) {
 
             comparedFile[key]["status"] = keys2.length === 0? "nothing" : "removed";
             comparedFile[key]["property"] = typeof(file1[key]) === "object"? getComparedObject(file1[key], {}) : file1[key]
             
         } else {
+
             comparedFile[key]["status"] = keys1.length === 0? "nothing" : "added";
             comparedFile[key]["property"] = typeof(file2[key]) === "object"? getComparedObject({}, file2[key]) : file2[key];
+
         }
     }
     return comparedFile;
@@ -142,7 +180,7 @@ const getIfObjectWasChanged = (file1, file2) => {
 
     for (let key of keys) {
         if (file1[key] !== undefined && file2[key] !== undefined) {
-            if (typeof(file1[key]) === "object" && typeof(file2[key]) === "object") {
+            if (isPlainObject(file1[key]) && isPlainObject(file2[key])) {
                 return getIfObjectWasChanged(file1[key], file2[key]);
             } else {
                 return true;

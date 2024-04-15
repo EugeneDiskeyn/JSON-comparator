@@ -5,7 +5,7 @@ import Path from "path"
 import file from "fs"
 
 
-export const gendiff = (path1, path2) => {
+export const gendiff = (path1, path2, format) => {
 
     const relativePath = "../data/";
 
@@ -20,7 +20,7 @@ export const gendiff = (path1, path2) => {
         const file1 = parse(data1, fileType1);
         const file2 = parse(data2, fileType2);
     
-        return showComparation(file1, file2);
+        return showComparation(file1, file2, format);
     } else {
         return "Check your path"
     }
