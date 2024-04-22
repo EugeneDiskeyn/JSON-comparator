@@ -1,4 +1,4 @@
-export const expectedResult = `- "follow": "false"
+export const expectedStylishedResult = `- "follow": "false"
   "host": "hexlet.io"
 - "proxy": "123.234.53.22"
 - "timeout": "50"

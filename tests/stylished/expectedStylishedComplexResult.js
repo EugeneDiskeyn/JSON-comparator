@@ -1,4 +1,4 @@
-export const expectedComplexResult = 
+export const expectedStylishedComplexResult = 
 `  "common":
     * "follow": "false"
       "setting1": "Value 1"

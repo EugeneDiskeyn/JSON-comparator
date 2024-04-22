@@ -1,6 +1,6 @@
 import pkg from 'lodash';
 const { isPlainObject } = pkg;
-
+//todo Хоть файл и не изменён, пишет changedInsides
 
 export const showComparation = (file1, file2, format) => {
     const comparedFile = getComparedObjectWithSigns(file1, file2);
@@ -178,17 +178,22 @@ const getIfObjectWasChanged = (file1, file2) => {
 
     const keys = getAllKeys(keys1, keys2).sort();
 
+    let flag = false;
+
     for (let key of keys) {
         if (file1[key] !== undefined && file2[key] !== undefined) {
             if (isPlainObject(file1[key]) && isPlainObject(file2[key])) {
-                return getIfObjectWasChanged(file1[key], file2[key]);
+                flag = getIfObjectWasChanged(file1[key], file2[key]);
             } else {
-                return true;
+                if (file1[key] !== file2[key]) {
+                    return true;
+                }
             }
+        } else if (file1[key] === undefined ^ file2[key] === undefined) {
+            return true;
         }
     }
-
-    return false;
+    return flag;
 }
 
 
