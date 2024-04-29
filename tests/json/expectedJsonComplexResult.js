@@ -5,7 +5,7 @@ export const expectedJsonComplexResult =
         "property": {
             "follow": {
                 "status": "added",
-                "property": "false"
+                "property": false
             },
             "setting1": {
                 "status": "unchanged",
@@ -13,11 +13,12 @@ export const expectedJsonComplexResult =
             },
             "setting2": {
                 "status": "removed",
-                "property": "200"
+                "property": 200
             },
             "setting3": {
                 "status": "changed",
-                "property": "null"
+                "oldProperty": true,
+                "property": null
             },
             "setting4": {
                 "status": "added",
@@ -40,6 +41,7 @@ export const expectedJsonComplexResult =
                         "property": {
                             "wow": {
                                 "status": "changed",
+                                "oldProperty": "",
                                 "property": "so much"
                             }
                         }
@@ -61,6 +63,7 @@ export const expectedJsonComplexResult =
         "property": {
             "baz": {
                 "status": "changed",
+                "oldProperty": "bas",
                 "property": "bars"
             },
             "foo": {
@@ -69,7 +72,10 @@ export const expectedJsonComplexResult =
             },
             "nest": {
                 "status": "changed",
-                "property": "str"
+                "property": "str",
+                "oldProperty": {
+                    "key": "value"
+                }
             }
         }
     },
@@ -78,14 +84,14 @@ export const expectedJsonComplexResult =
         "property": {
             "abc": {
                 "status": "nothing",
-                "property": "12345"
+                "property": 12345
             },
             "deep": {
                 "status": "nothing",
                 "property": {
                     "id": {
                         "status": "nothing",
-                        "property": "45"
+                        "property": 45
                     }
                 }
             }
@@ -102,7 +108,7 @@ export const expectedJsonComplexResult =
                         "property": {
                             "number": {
                                 "status": "nothing",
-                                "property": "45"
+                                "property": 45
                             }
                         }
                     }
@@ -110,7 +116,7 @@ export const expectedJsonComplexResult =
             },
             "fee": {
                 "status": "nothing",
-                "property": "100500"
+                "property": 100500
             }
         }
     }

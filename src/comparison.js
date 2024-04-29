@@ -1,9 +1,8 @@
 import pkg from 'lodash';
 const { isPlainObject } = pkg;
-//todo Хоть файл и не изменён, пишет changedInsides
 
 export const showComparation = (file1, file2, format) => {
-    const comparedFile = getComparedObjectWithSigns(file1, file2);
+    const comparedFile = getComparedObject(file1, file2);
     
     switch (format) {
         case "plain":
@@ -11,21 +10,25 @@ export const showComparation = (file1, file2, format) => {
         case "JSON":
             return getJSONAnswer(comparedFile);
         default:
-            return getStylishedComparedFile(comparedFile);
+            return getStylishedAnswer(comparedFile);
     }
 }
 
 
-const getStylishedComparedFile = (comparedFile, tabulation = "") => {
+const getStylishedAnswer = (comparedFile, tabulation = "") => {
     const array = Object.keys(comparedFile).map((key) => {
         const sign = getSign(comparedFile[key]["status"]);
         if (isPlainObject(comparedFile[key]["property"])) {
 
-            return `${tabulation}${sign} "${key}":\n${getStylishedComparedFile(comparedFile[key]["property"], tabulation + "    ")}`;
+            return `${tabulation}${sign} "${key}":\n${getStylishedAnswer(comparedFile[key]["property"], tabulation + "    ")}`;
         } else {
             let line = ``;
             if (comparedFile[key]["oldProperty"] !== undefined) {
-                line += `${tabulation}- "${key}": "${comparedFile[key]["oldProperty"]}"\n`;
+                if (isPlainObject(comparedFile[key]["oldProperty"])) {
+                    line += `${tabulation}- "${key}": "[complex value]"\n`;
+                } else {
+                    line  += `${tabulation}- "${key}": "${comparedFile[key]["oldProperty"]}"\n`;
+                }
             }
             line += `${tabulation}${sign} "${key}": "${comparedFile[key]["property"]}"`;
 
@@ -60,9 +63,13 @@ const getPlainAnswer = (comparedFile, passedKey="") => {
                 array.push(getPlainAnswer(comparedFile[key]["property"], currentKey + "."));
             } else {
                 if (status === "changed") {
-                    array.push(`Property ${currentKey} was updated from ${comparedFile[key]["oldProperty"]} to ${comparedFile[key]["property"]}`)
+                    if (isPlainObject(comparedFile[key]["oldProperty"])) {
+                        array.push(`Property ${currentKey} was updated from [complex value] to ${comparedFile[key]["property"]}`);
+                    } else {
+                        array.push(`Property ${currentKey} was updated from ${comparedFile[key]["oldProperty"]} to ${comparedFile[key]["property"]}`);
+                    }
                 } else if (status === "changedInsides") {
-                    array.push(`Property ${currentKey} was updated from ${comparedFile[key]["oldProperty"]} to ${comparedFile[key]["property"]}`)
+                    array.push(`Property ${currentKey} was updated from [complex value] to ${comparedFile[key]["property"]}`)
                 }
             }
         }
@@ -72,32 +79,31 @@ const getPlainAnswer = (comparedFile, passedKey="") => {
 }
 
 
-const getJSONAnswer = (comparedFile, tabulation = "    ", depth = 0) => {
-    const keys = Object.keys(comparedFile);
-    const array = keys.map((key, index)=> {
-        let line = "";
-        if (isPlainObject(comparedFile[key]["property"])) {
-            line += `${tabulation}"${key}": {\n`;
-            line += `${tabulation+"    "}"status": "${comparedFile[key]["status"]}",\n`;
-            line += `${tabulation+"    "}"property": {\n`;
-            line += `${getJSONAnswer(comparedFile[key]["property"], tabulation + "        ", depth + 1)}\n`;
-            line += `${tabulation+"    "}}\n`
-            line += index === keys.length-1? `${tabulation}}` : `${tabulation}},`;
-        } else {
-            line += `${tabulation}"${key}": {\n`
-            line += `${tabulation+"    "}"status": "${comparedFile[key]["status"]}",\n`;
-            line += `${tabulation+"    "}"property": "${comparedFile[key]["property"]}"\n`;
-            line += index === keys.length-1? `${tabulation}}` : `${tabulation}},`;
+const getJSONAnswer = (comparedFile) => {
+    const stringified = JSON.stringify(comparedFile)
+    const length = stringified.length;
+
+    let beautified = "";
+    let tabulation = "";
+
+    for (let i = 0; i < length; i++) {
+        beautified += stringified[i];
+        if (stringified[i] === "{") {
+            tabulation += "    ";
+            beautified += `\n${tabulation}`;
         }
-        return line;
-    });
-    return depth === 0? `{\n${array.join("\n")}\n}` : `${array.join("\n")}`;
-}
-
-
-const getComparedObjectWithSigns = (file1, file2) => {
-    const comparedFile = getComparedObject(file1, file2)
-    return comparedFile;
+        if (stringified[i+1] === "}") {
+            tabulation = tabulation.slice(0, -4);
+            beautified += `\n${tabulation}`;
+        }
+        if (stringified[i] === ",") {
+            beautified += `\n${tabulation}`;
+        }
+        if (stringified[i] === ":") {
+            beautified += " "
+        }
+    }
+    return beautified;
 }
 
 
@@ -128,7 +134,7 @@ const getComparedObject = (file1, file2) => {
             } else {
                 comparedFile[key]["status"] = "changed";
                 comparedFile[key]["property"] = file2[key];
-                comparedFile[key]["oldProperty"] = "[complex value]";
+                comparedFile[key]["oldProperty"] = file1[key];
             }
 
         } else if (file1[key] !== undefined && file2[key] === undefined) {

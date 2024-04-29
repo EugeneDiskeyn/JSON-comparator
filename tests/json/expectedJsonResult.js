@@ -2,7 +2,7 @@ export const expectedJsonResult =
 `{
     "follow": {
         "status": "removed",
-        "property": "false"
+        "property": false
     },
     "host": {
         "status": "unchanged",
@@ -14,10 +14,11 @@ export const expectedJsonResult =
     },
     "timeout": {
         "status": "changed",
-        "property": "20"
+        "oldProperty": 50,
+        "property": 20
     },
     "verbose": {
         "status": "added",
-        "property": "true"
+        "property": true
     }
 }`
