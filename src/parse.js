@@ -8,5 +8,7 @@ export const parse = (data, fileType) => {
         case "yaml":
         case "yml":
             return yaml.load(data);
+        default:
+            return ;
     }
 }

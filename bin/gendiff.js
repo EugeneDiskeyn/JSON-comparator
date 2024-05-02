@@ -16,9 +16,3 @@ program
 })
 
 program.parse();
-
-const options = program.opts();
-
-if (options.help) {
-    program.help();
-}
