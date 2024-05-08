@@ -1,11 +1,10 @@
+import fs from "fs";
 import { parse } from "../src/parse.js";
 import { showComparation } from "../src/comparison.js";
-import { isAbsolute } from "path";
-import Path from "path"
-import file from "fs"
+import { isAbsolute, basename } from "path";
 
 
-export const gendiff = (path1, path2, format) => {
+export const gendiff = (path1, path2, format = "stylish") => {
 
     const relativePath = "../data/";
 
@@ -22,26 +21,22 @@ export const gendiff = (path1, path2, format) => {
     
         return showComparation(file1, file2, format);
     } else {
-        return "Check your path"
+        return "Check your path";
     }
 }
 
 
 const getData = (path, relativePath) => {
-        const data = isAbsolute(path)? file.readFileSync(path) : file.readFileSync(`${relativePath + path}`);
-        return data;
+        return isAbsolute(path)? fs.readFileSync(path) : fs.readFileSync(`${relativePath + path}`);
 }
 
 
 const getFileType = (path) => {
-    const fileName = Path.basename(path);
+    const fileName = basename(path);
     return fileName.split(".").pop();
 }
 
 
 const doesFileExist = (path, relativePath) => {
-    if (file.existsSync(`${relativePath + path}`) || file.existsSync(path)) {
-        return true;
-    }
-    return false;
+    return fs.existsSync(`${relativePath + path}`) || fs.existsSync(path)? true : false;
 }

@@ -1,26 +1,35 @@
-import pkg from 'lodash';
-const { isPlainObject } = pkg;
+import _ from 'lodash';
 
 
 export const getStylishedOutput = (comparedFile, tabulation = "") => {
+
     const array = Object.keys(comparedFile).map((key) => {
         const sign = getSign(comparedFile[key]["status"]);
         
-        if (isPlainObject(comparedFile[key]["property"])) {
-            return `${tabulation}${sign} "${key}":\n${getStylishedOutput(comparedFile[key]["property"], tabulation + "    ")}`;
-        } else {
-            let line = ``;
-            if (comparedFile[key]["oldProperty"] !== undefined) {
-                if (isPlainObject(comparedFile[key]["oldProperty"])) {
-                    line += `${tabulation}- "${key}": "[complex value]"\n`;
-                } else {
-                    line  += `${tabulation}- "${key}": "${comparedFile[key]["oldProperty"]}"\n`;
-                }
-            }
-            line += `${tabulation}${sign} "${key}": "${comparedFile[key]["property"]}"`;
-
-            return line;
+        if (comparedFile[key]["status"] === undefined && _.isPlainObject(comparedFile[key])) {
+            return `${tabulation}  "${key}":\n${getStylishedOutput(comparedFile[key], tabulation + "    ")}`;
         }
+        if (comparedFile[key]["status"] === undefined && !_.isPlainObject(comparedFile[key])) {
+            return `${tabulation}  "${key}": "${comparedFile[key]}"`;
+        }
+
+        let line = "";
+
+        if (comparedFile[key]["status"] === "changed" && _.isPlainObject(comparedFile[key]["oldProperty"])) {
+            line += `${tabulation}- "${key}": [complex value]\n`;
+        }
+
+        if (comparedFile[key]["status"] === "changed" && !_.isPlainObject(comparedFile[key]["oldProperty"])) {
+            line += `${tabulation}- "${key}": "${comparedFile[key]["oldProperty"]}"\n`;
+        }
+
+        if (_.isPlainObject(comparedFile[key]["property"])) {
+            return `${tabulation}${sign} "${key}":\n${getStylishedOutput(comparedFile[key]["property"], tabulation + "    ")}`
+        }
+
+        line += `${tabulation}${sign} "${key}": "${comparedFile[key]["property"]}"`;
+
+        return line;
     })
 
     return array.join("\n");
@@ -29,9 +38,9 @@ export const getStylishedOutput = (comparedFile, tabulation = "") => {
 
 const getSign = (status) => {
     switch (status) {
-        case "nothing":
         case "unchanged":
         case "changedInsides":
+        case undefined:
             return " ";
         case "added":
             return "*";
@@ -40,6 +49,6 @@ const getSign = (status) => {
         case "removed":
             return "-";
         default:
-            return;
+            throw "There is no such status";
     }
 }

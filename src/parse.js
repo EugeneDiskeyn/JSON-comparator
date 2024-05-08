@@ -9,6 +9,6 @@ export const parse = (data, fileType) => {
         case "yml":
             return yaml.load(data);
         default:
-            return ;
+            throw new "Unknown file extension";
     }
 }

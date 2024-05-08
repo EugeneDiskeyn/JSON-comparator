@@ -1,5 +1,4 @@
-import pkg from 'lodash';
-const { isPlainObject } = pkg;
+import _ from 'lodash';
 
 
 export const getPlainOutput = (comparedFile, passedKey="") => {
@@ -12,7 +11,7 @@ export const getPlainOutput = (comparedFile, passedKey="") => {
         const currentKey = passedKey + key;
 
         if (status === "added") {
-            if (isPlainObject(comparedFile[key]["property"])) {
+            if (_.isPlainObject(comparedFile[key]["property"])) {
                 array.push(`Property ${currentKey} was added with value [complex value]`);
             } else {
                 array.push(`Property ${currentKey} was added with value ${comparedFile[key]["property"]}`);
@@ -21,11 +20,11 @@ export const getPlainOutput = (comparedFile, passedKey="") => {
             array.push(`Property ${currentKey} was removed`);
         } else {
 
-            if (isPlainObject(comparedFile[key]["property"])) {
+            if (_.isPlainObject(comparedFile[key]["property"])) {
                 array.push(getPlainOutput(comparedFile[key]["property"], currentKey + "."));
             } else {
                 if (status === "changed") {
-                    if (isPlainObject(comparedFile[key]["oldProperty"])) {
+                    if (_.isPlainObject(comparedFile[key]["oldProperty"])) {
                         array.push(`Property ${currentKey} was updated from [complex value] to ${comparedFile[key]["property"]}`);
                     } else {
                         array.push(`Property ${currentKey} was updated from ${comparedFile[key]["oldProperty"]} to ${comparedFile[key]["property"]}`);

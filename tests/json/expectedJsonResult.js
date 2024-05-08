@@ -14,8 +14,8 @@ export const expectedJsonResult =
     },
     "timeout": {
         "status": "changed",
-        "oldProperty": 50,
-        "property": 20
+        "property": 20,
+        "oldProperty": 50
     },
     "verbose": {
         "status": "added",

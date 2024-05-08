@@ -18,7 +18,7 @@ export const expectedStylishedComplexResult =
     - "baz": "bas"
     + "baz": "bars"
       "foo": "bar"
-    - "nest": "[complex value]"
+    - "nest": [complex value]
     + "nest": "str"
 - "group2":
       "abc": "12345"

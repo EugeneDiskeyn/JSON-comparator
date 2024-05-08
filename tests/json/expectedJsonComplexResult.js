@@ -17,8 +17,8 @@ export const expectedJsonComplexResult =
             },
             "setting3": {
                 "status": "changed",
-                "oldProperty": true,
-                "property": null
+                "property": null,
+                "oldProperty": true
             },
             "setting4": {
                 "status": "added",
@@ -27,10 +27,7 @@ export const expectedJsonComplexResult =
             "setting5": {
                 "status": "added",
                 "property": {
-                    "key5": {
-                        "status": "nothing",
-                        "property": "value5"
-                    }
+                    "key5": "value5"
                 }
             },
             "setting6": {
@@ -41,8 +38,8 @@ export const expectedJsonComplexResult =
                         "property": {
                             "wow": {
                                 "status": "changed",
-                                "oldProperty": "",
-                                "property": "so much"
+                                "property": "so much",
+                                "oldProperty": ""
                             }
                         }
                     },
@@ -63,8 +60,8 @@ export const expectedJsonComplexResult =
         "property": {
             "baz": {
                 "status": "changed",
-                "oldProperty": "bas",
-                "property": "bars"
+                "property": "bars",
+                "oldProperty": "bas"
             },
             "foo": {
                 "status": "unchanged",
@@ -82,18 +79,9 @@ export const expectedJsonComplexResult =
     "group2": {
         "status": "removed",
         "property": {
-            "abc": {
-                "status": "nothing",
-                "property": 12345
-            },
+            "abc": 12345,
             "deep": {
-                "status": "nothing",
-                "property": {
-                    "id": {
-                        "status": "nothing",
-                        "property": 45
-                    }
-                }
+                "id": 45
             }
         }
     },
@@ -101,23 +89,11 @@ export const expectedJsonComplexResult =
         "status": "added",
         "property": {
             "deep": {
-                "status": "nothing",
-                "property": {
-                    "id": {
-                        "status": "nothing",
-                        "property": {
-                            "number": {
-                                "status": "nothing",
-                                "property": 45
-                            }
-                        }
-                    }
+                "id": {
+                    "number": 45
                 }
             },
-            "fee": {
-                "status": "nothing",
-                "property": 100500
-            }
+            "fee": 100500
         }
     }
 }`
