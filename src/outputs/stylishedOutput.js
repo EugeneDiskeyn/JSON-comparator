@@ -4,6 +4,11 @@ import _ from 'lodash';
 export const getStylishedOutput = (comparedFile, tabulation = "") => {
 
     const array = Object.keys(comparedFile).map((key) => {
+
+        if (comparedFile[key] === null) {
+            return `${tabulation}  "${key}": "${comparedFile[key]}"`;
+        }
+
         const sign = getSign(comparedFile[key]["status"]);
         
         if (comparedFile[key]["status"] === undefined && _.isPlainObject(comparedFile[key])) {

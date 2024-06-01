@@ -6,7 +6,7 @@ import { isAbsolute, basename } from "path";
 
 export const gendiff = (path1, path2, format = "stylish") => {
 
-    const relativePath = "../data/";
+    const relativePath = "data/";
 
     if (doesFileExist(path1, relativePath) && doesFileExist(path2, relativePath)) {
 
