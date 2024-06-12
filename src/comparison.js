@@ -29,26 +29,30 @@ const getComparedObject = (file1, file2) => {
 
     return keys.reduce((newObject, key) => {
         if (!_.has(file1, key)) {
-            newObject[key] = {"status": "added", "property": file2[key]};
-            return newObject;
+            return {...newObject, [key]: {"status": "added", "property": _.isPlainObject(file2[key])? getCargo(file2[key]) : file2[key]}};
         }
         if (!_.has(file2, key)) {
-            newObject[key] = {"status": "removed", "property": file1[key]};
-            return newObject;
+            return {...newObject, [key]: {"status": "removed", "property": _.isPlainObject(file1[key])? getCargo(file1[key]) : file1[key]}};
         }
         if (_.isEqual(file1[key], file2[key])) {
-            newObject[key] = {"status": "unchanged", "property": file2[key]};
-            return newObject;
+            return {...newObject, [key]: {"status": "unchanged", "property": file2[key]}};
         }
         if (_.isPlainObject(file1[key]) ^ _.isPlainObject(file2[key])) {
-            newObject[key] = {"status": "changed", "property": file2[key], "oldProperty": file1[key]};
-            return newObject;
+            return {...newObject, [key]: {"status": "changed", "property": file2[key], "oldProperty": file1[key]}};
         }
         if (_.isPlainObject(file1[key])) {
-            newObject[key] = {"status": "changedInsides", "property": getComparedObject(file1[key], file2[key])};
-            return newObject;
+            return {...newObject, [key]: {"status": "changedInsides", "property": getComparedObject(file1[key], file2[key])}};
         }
-        newObject[key] = {"status": "changed", "property": file2[key], "oldProperty": file1[key]};
-        return newObject; 
+        return {...newObject, [key]: {"status": "changed", "property": file2[key], "oldProperty": file1[key]}};
+    }, {})
+}
+
+const getCargo = (file) => {
+    const keys = file === ""? [] : Object.keys(file);
+    return keys.reduce((newObject, key)=>{
+        if (_.isPlainObject(file[key])) {
+            return {...newObject, [key]: {"status": "cargo", "property": getCargo(file[key])}};
+        }
+        return {...newObject, [key]: {"status": "cargo", "property": file[key]}}
     }, {})
 }

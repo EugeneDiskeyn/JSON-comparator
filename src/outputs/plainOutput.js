@@ -4,40 +4,26 @@ import _ from 'lodash';
 export const getPlainOutput = (comparedFile, passedKey = "") => {
     const keys = Object.keys(comparedFile);
 
-    const array = keys.reduce((newArray, key) => {
+    const array = keys.map((key) => {
 
         const status = comparedFile[key]["status"];
         const currentKey = passedKey + key;
 
         if (status === "removed") {
-            newArray.push(`Property ${currentKey} was removed`);
-            return newArray;
-        }
-        if (status === "added" && _.isPlainObject(comparedFile[key]["property"])) {
-            newArray.push(`Property ${currentKey} was added with value [complex value]`);
-            return newArray;
+           return `Property ${currentKey} was removed`;
         }
         if (status === "added") {
-            newArray.push(`Property ${currentKey} was added with value ${comparedFile[key]["property"]}`);
-            return newArray;
+            return `Property ${currentKey} was added with value ${comparedFile[key]["property"]}`;
         }
         if (_.isPlainObject(comparedFile[key]["property"])) {
-            newArray.push(getPlainOutput(comparedFile[key]["property"], currentKey + "."));
-            return newArray;
+            return getPlainOutput(comparedFile[key]["property"], currentKey + ".");
         }
         if (status === "changedInsides") {
-            newArray.push(`Property ${currentKey} was updated from [complex value] to ${comparedFile[key]["property"]}`);
-            return newArray;
+            return `Property ${currentKey} was updated from [complex value] to ${comparedFile[key]["property"]}`;
         }
-        if (status === "changed" && _.isPlainObject(comparedFile[key]["oldProperty"])) {
-            newArray.push(`Property ${currentKey} was updated from [complex value] to ${comparedFile[key]["property"]}`);
-            return newArray;
+        if (status === "changed") {
+           return `Property ${currentKey} was updated from ${comparedFile[key]["oldProperty"]} to ${comparedFile[key]["property"]}`;
         }
-        if (status === "changed" && !_.isPlainObject(comparedFile[key]["oldProperty"])) {
-            newArray.push(`Property ${currentKey} was updated from ${comparedFile[key]["oldProperty"]} to ${comparedFile[key]["property"]}`);
-            return newArray;
-        }
-        return newArray;
-    }, [])
-    return array.join("\n");
+    })
+    return array.filter((elem)=> {return elem !== undefined}).join("\n");
 }

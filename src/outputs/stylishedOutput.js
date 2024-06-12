@@ -10,31 +10,14 @@ export const getStylishedOutput = (comparedFile, tabulation = "") => {
         }
 
         const sign = getSign(comparedFile[key]["status"]);
-        
-        if (comparedFile[key]["status"] === undefined && _.isPlainObject(comparedFile[key])) {
-            return `${tabulation}  "${key}":\n${getStylishedOutput(comparedFile[key], tabulation + "    ")}`;
-        }
-        if (comparedFile[key]["status"] === undefined && !_.isPlainObject(comparedFile[key])) {
-            return `${tabulation}  "${key}": "${comparedFile[key]}"`;
-        }
-
-        let line = "";
-
-        if (comparedFile[key]["status"] === "changed" && _.isPlainObject(comparedFile[key]["oldProperty"])) {
-            line += `${tabulation}- "${key}": [complex value]\n`;
-        }
-
-        if (comparedFile[key]["status"] === "changed" && !_.isPlainObject(comparedFile[key]["oldProperty"])) {
-            line += `${tabulation}- "${key}": "${comparedFile[key]["oldProperty"]}"\n`;
-        }
 
         if (_.isPlainObject(comparedFile[key]["property"])) {
             return `${tabulation}${sign} "${key}":\n${getStylishedOutput(comparedFile[key]["property"], tabulation + "    ")}`
         }
-
-        line += `${tabulation}${sign} "${key}": "${comparedFile[key]["property"]}"`;
-
-        return line;
+        if (comparedFile[key]["status"] === "changed") {
+            return `${tabulation}- "${key}": "${comparedFile[key]["oldProperty"]}"\n${tabulation}+ "${key}": "${comparedFile[key]["property"]}"`;
+        }
+        return `${tabulation}${sign} "${key}": "${comparedFile[key]["property"]}"`;
     })
 
     return array.join("\n");
@@ -45,7 +28,7 @@ const getSign = (status) => {
     switch (status) {
         case "unchanged":
         case "changedInsides":
-        case undefined:
+        case "cargo":
             return " ";
         case "added":
             return "*";

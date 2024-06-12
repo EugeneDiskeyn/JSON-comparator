@@ -27,7 +27,10 @@ export const expectedJsonComplexResult =
             "setting5": {
                 "status": "added",
                 "property": {
-                    "key5": "value5"
+                    "key5": {
+                        "status": "cargo",
+                        "property": "value5"
+                    }
                 }
             },
             "setting6": {
@@ -79,9 +82,18 @@ export const expectedJsonComplexResult =
     "group2": {
         "status": "removed",
         "property": {
-            "abc": 12345,
+            "abc": {
+                "status": "cargo",
+                "property": 12345
+            },
             "deep": {
-                "id": 45
+                "status": "cargo",
+                "property": {
+                    "id": {
+                        "status": "cargo",
+                        "property": 45
+                    }
+                }
             }
         }
     },
@@ -89,11 +101,23 @@ export const expectedJsonComplexResult =
         "status": "added",
         "property": {
             "deep": {
-                "id": {
-                    "number": 45
+                "status": "cargo",
+                "property": {
+                    "id": {
+                        "status": "cargo",
+                        "property": {
+                            "number": {
+                                "status": "cargo",
+                                "property": 45
+                            }
+                        }
+                    }
                 }
             },
-            "fee": 100500
+            "fee": {
+                "status": "cargo",
+                "property": 100500
+            }
         }
     }
 }`
