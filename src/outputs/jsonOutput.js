@@ -5,23 +5,27 @@ export const getJsonOutput = (comparedFile) => {
     let beautified = "";
     let tabulation = "";
 
-    for (let i = 0; i < length; i++) {
-        beautified += stringified[i];
-        
-        if (stringified[i] === "{") {
-            tabulation += "    ";
-            beautified += `\n${tabulation}`;
-        }
-        if (stringified[i+1] === "}") {
-            tabulation = tabulation.slice(0, -4);
-            beautified += `\n${tabulation}`;
-        }
-        if (stringified[i] === ",") {
-            beautified += `\n${tabulation}`;
-        }
-        if (stringified[i] === ":") {
-            beautified += " "
+    for (let sign of stringified) {
+        switch (sign) {
+            case "{":
+                tabulation += "    ";
+                beautified += `${sign}\n${tabulation}`;
+                break;
+            case "}":
+                tabulation = tabulation.slice(0, -4);
+                beautified += `\n${tabulation}${sign}`;
+                break;
+            case ",":
+                beautified += `${sign}\n${tabulation}`;
+                break;
+            case ":":
+                beautified += `${sign} `;
+                break
+            default:
+                beautified += sign;
         }
     }
     return beautified;
 }
+
+//todo switch case
