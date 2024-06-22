@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-
 export const getPlainOutput = (comparedFile, passedKey = "") => {
     const keys = Object.keys(comparedFile);
 
@@ -8,6 +7,9 @@ export const getPlainOutput = (comparedFile, passedKey = "") => {
 
         const status = comparedFile[key]["status"];
         const currentKey = passedKey + key;
+
+        const property = getProperty(comparedFile[key]["property"]);
+        const oldProperty = getProperty(comparedFile[key]["oldProperty"]);
         
         switch (status) {
             case "changedInsides":
@@ -15,9 +17,9 @@ export const getPlainOutput = (comparedFile, passedKey = "") => {
             case "removed":
                 return `Property ${currentKey} was removed`;
             case "added":
-                return `Property ${currentKey} was added with value ${comparedFile[key]["property"]}`;
+                return `Property ${currentKey} was added with value ${property}`;
             case "changed":
-                return `Property ${currentKey} was updated from ${comparedFile[key]["oldProperty"]} to ${comparedFile[key]["property"]}`;
+                return `Property ${currentKey} was updated from ${oldProperty} to ${property}`;
             case "unchanged":
             case "cargo":
                 break;
@@ -26,4 +28,11 @@ export const getPlainOutput = (comparedFile, passedKey = "") => {
         }
     })
     return array.filter((elem)=> {return elem !== undefined}).join("\n");
+}
+
+const getProperty = (property) => {
+    if (_.isString(property)) {
+        return `"${property}"`;
+    }
+    return property;
 }

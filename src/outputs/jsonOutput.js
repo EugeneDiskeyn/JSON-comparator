@@ -1,6 +1,5 @@
 export const getJsonOutput = (comparedFile) => {
     const stringified = JSON.stringify(comparedFile)
-    const length = stringified.length;
 
     let beautified = "";
     let tabulation = "";
@@ -27,5 +26,3 @@ export const getJsonOutput = (comparedFile) => {
     }
     return beautified;
 }
-
-//todo switch case
