@@ -3,6 +3,7 @@ export const getJsonOutput = (comparedFile) => {
 
     let beautified = "";
     let tabulation = "";
+    let bracketsCounter = 0;
 
     for (let sign of stringified) {
         switch (sign) {
@@ -15,11 +16,23 @@ export const getJsonOutput = (comparedFile) => {
                 beautified += `\n${tabulation}${sign}`;
                 break;
             case ",":
-                beautified += `${sign}\n${tabulation}`;
+                if (bracketsCounter === 0) {
+                    beautified += `${sign}\n${tabulation}`;
+                } else {
+                    beautified += `${sign} `;
+                }
                 break;
             case ":":
                 beautified += `${sign} `;
                 break
+            case "[":
+                bracketsCounter++;
+                beautified += sign;
+                break;
+            case "]":
+                bracketsCounter--;
+                beautified += sign;
+                break;
             default:
                 beautified += sign;
         }

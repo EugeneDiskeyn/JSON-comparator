@@ -8,7 +8,7 @@ export const getStylishedOutput = (comparedFile, tabulation = "") => {
         const oldProperty = getProperty(comparedFile[key]["oldProperty"]);
         const sign = getSign(comparedFile[key]["status"]);
 
-        if (_.isPlainObject(comparedFile[key]["property"])) {
+        if (_.isPlainObject(property)) {
             return `${tabulation}${sign} "${key}":\n${getStylishedOutput(comparedFile[key]["property"], tabulation + "    ")}`;
         }
         if (comparedFile[key]["status"] === "changed") {
@@ -41,6 +41,9 @@ const getSign = (status) => {
 const getProperty = (property) => {
     if (_.isString(property)) {
         return `"${property}"`;
+    }
+    if (_.isArray(property)) {
+        return "[array];"
     }
     return property;
 }
