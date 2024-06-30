@@ -8,11 +8,11 @@ export const getStylishedOutput = (comparedFile, tabulation = "") => {
         const oldProperty = getProperty(comparedFile[key]["oldProperty"]);
         const sign = getSign(comparedFile[key]["status"]);
 
-        if (_.isPlainObject(property)) {
-            return `${tabulation}${sign} "${key}":\n${getStylishedOutput(comparedFile[key]["property"], tabulation + "    ")}`;
-        }
         if (comparedFile[key]["status"] === "changed") {
-            return `${tabulation}- "${key}": ${oldProperty}\n${tabulation}+ "${key}": ${property}`;
+            return `${tabulation}- "${key}": ${_.isPlainObject(oldProperty)? getOldProperty(oldProperty, tabulation + "    ") : oldProperty}\n${tabulation}+ "${key}": ${getPreviousProperty(property, tabulation)}`;
+        }
+        if (_.isPlainObject(property)) {
+            return `${tabulation}${sign} "${key}":\n${getStylishedOutput(property, tabulation + "    ")}`;
         }
         return `${tabulation}${sign} "${key}": ${property}`;
     })
@@ -38,12 +38,26 @@ const getSign = (status) => {
     }
 }
 
-const getProperty = (property) => {
-    if (_.isString(property)) {
-        return `"${property}"`;
+const getOldProperty = (property, tabulation) => {
+    const array =  Object.keys(property).map((key) => {
+        if (_.isPlainObject(property[key])) {
+            return getOldProperty(property[key], tabulation + "    ")
+        }
+        return `${tabulation}  "${key}": ${property[key]}`;
+    })
+    return `\n${array}`;
+}
+
+const getPreviousProperty = (property, tabulation) => {
+    if (!_.isPlainObject(property)) {
+        return property;
     }
+    return `\n${getStylishedOutput(property, tabulation + "    ")}`;
+}
+
+const getProperty = (property) => {
     if (_.isArray(property)) {
-        return "[array];"
+        return JSON.stringify(property);
     }
     return property;
 }

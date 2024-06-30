@@ -34,8 +34,8 @@ const getProperty = (property) => {
     if (_.isString(property)) {
         return `"${property}"`;
     }
-    if (_.isArray(property)) {
-        return "[array];"
+    if (_.isObject(property)) {
+        return "[complex Value]"
     }
     return property;
 }

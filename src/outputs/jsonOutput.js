@@ -1,6 +1,6 @@
 export const getJsonOutput = (comparedFile) => {
-    const stringified = JSON.stringify(comparedFile)
-
+    const stringified = JSON.stringify(comparedFile);
+    
     let beautified = "";
     let tabulation = "";
     let bracketsCounter = 0;
